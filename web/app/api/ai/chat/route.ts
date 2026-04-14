@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ConvexHttpClient } from 'convex/browser'
-import { aiChat, aiEmbed } from '@/lib/ai'
+import { aiChat, aiEmbed } from '@/lib/openai'
 
 function getConvex() {
   const url = process.env.NEXT_PUBLIC_CONVEX_URL

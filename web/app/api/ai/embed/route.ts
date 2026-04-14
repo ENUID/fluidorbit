@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { ConvexHttpClient } from 'convex/browser'
 import { authOptions } from '@/lib/auth'
-import { EMBED_DIMENSIONS, EMBED_MODEL, aiEmbed, aiHealth } from '@/lib/ai'
+import { EMBED_DIMENSIONS, EMBED_MODEL, aiEmbed, aiHealth } from '@/lib/openai'
 import { api } from '@/lib/convexApi'
 
 function getConvex() {

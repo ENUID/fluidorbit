@@ -20,7 +20,6 @@
 
 ## 📂 Documentation
 - [OpenAI Configuration](./OPENAI_SETUP.md)
-- [Ollama (Local AI) Setup](./OLLAMA_SETUP.md)
 - [Partner Handoff Guide](./PARTNER_HANDOFF.md)
 
 ## ⚡ Quick Start
