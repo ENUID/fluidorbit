@@ -1248,6 +1248,7 @@ function Topbar({
   setDropdownOpen,
   onSwitchStore,
   onAddStore,
+  onSync,
   reconnectUrl,
   syncStatus,
   isMobile,
