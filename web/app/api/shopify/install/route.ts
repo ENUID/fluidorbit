@@ -26,11 +26,9 @@ export async function GET(req: NextRequest) {
   // Determine the base URL for the callback. 
   // Priority: 1. SHOPIFY_APP_URL, 2. Current host (if it's the store subdomain), 3. NEXTAUTH_URL
   const host = req.headers.get('host') || ''
-  let baseUrl = process.env.NEXTAUTH_URL
+  let baseUrl = process.env.SHOPIFY_APP_URL || process.env.NEXTAUTH_URL
   
-  if (process.env.SHOPIFY_APP_URL) {
-    baseUrl = process.env.SHOPIFY_APP_URL
-  } else if (host.startsWith('store.')) {
+  if (!process.env.SHOPIFY_APP_URL && host.startsWith('store.')) {
     const protocol = host.includes('localhost') ? 'http' : 'https'
     baseUrl = `${protocol}://${host}`
   }
