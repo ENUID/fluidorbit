@@ -162,30 +162,30 @@ export default function Home() {
 
     return (
       <>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '16px 20px' : '32px 40px', display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
           {!hasConversation && (
             <div
               style={{
                 flex: 1,
                 display: 'grid',
                 alignContent: 'center',
-                gap: 40,
+                gap: isMobile ? 24 : 40,
                 maxWidth: 800,
                 margin: '0 auto',
-                padding: '40px 0',
+                padding: isMobile ? '20px 0' : '40px 0',
                 textAlign: 'center',
               }}
             >
               <div className="fade-in">
-                <div style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--m-green)', fontWeight: 600, marginBottom: 16 }}>
+                <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--m-green)', fontWeight: 600, marginBottom: isMobile ? 10 : 16 }}>
                   Buyer workspace
                 </div>
-                <h1 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(42px, 6vw, 76px)', lineHeight: 0.96, fontWeight: 300, color: 'var(--ink)', marginBottom: 20, letterSpacing: '-0.04em' }}>
+                <h1 style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? '42px' : 'clamp(42px, 6vw, 76px)', lineHeight: 0.96, fontWeight: 300, color: 'var(--ink)', marginBottom: isMobile ? 14 : 20, letterSpacing: '-0.04em' }}>
                   Search by intent,
                   <br />
                   not by ads.
                 </h1>
-                <p style={{ maxWidth: 540, fontSize: 15.5, color: 'var(--ink3)', lineHeight: 1.8, fontWeight: 300, margin: '0 auto' }}>
+                <p style={{ maxWidth: 540, fontSize: isMobile ? 14 : 15.5, color: 'var(--ink3)', lineHeight: 1.7, fontWeight: 300, margin: '0 auto' }}>
                   Fluid Orbit matches items from verified independent stores. Describe what you need—context, budget, or style—and discover unique finds.
                 </p>
               </div>

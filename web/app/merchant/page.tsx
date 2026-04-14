@@ -40,7 +40,7 @@ export default function MerchantLanding() {
         background: 'var(--m-green)', 
         display: 'flex', 
         flexDirection: 'column', 
-        padding: isMobile ? '48px 24px' : '38px 52px', 
+        padding: isMobile ? '24px 24px 32px' : '38px 52px', 
         position: 'relative', 
         overflow: 'hidden', 
         flexShrink: 0,
@@ -48,7 +48,7 @@ export default function MerchantLanding() {
       }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at 50% 110%, rgba(200,213,181,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'center' : 'space-between', marginBottom: isMobile ? 56 : 72 }}>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'center' : 'space-between', marginBottom: isMobile ? 32 : 72 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
               <circle cx="14" cy="14" r="12" stroke="#c8d5b5" strokeWidth="1.5" />
@@ -60,17 +60,17 @@ export default function MerchantLanding() {
         </div>
 
         <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: isMobile ? 'flex-start' : 'center', alignItems: isMobile ? 'center' : 'flex-start' }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(200,213,181,0.6)', marginBottom: 20, fontWeight: 500 }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(200,213,181,0.6)', marginBottom: isMobile ? 12 : 20, fontWeight: 500 }}>
             Merchant workspace
           </div>
           <h1 style={{ 
             fontFamily: 'var(--serif)', 
-            fontSize: isMobile ? '46px' : 'clamp(40px,4.4vw,58px)', 
+            fontSize: isMobile ? '40px' : 'clamp(40px,4.4vw,58px)', 
             fontWeight: 300, 
             color: 'var(--bg-white)', 
             lineHeight: 1.02, 
             letterSpacing: '-0.03em', 
-            marginBottom: 28 
+            marginBottom: isMobile ? 20 : 28 
           }}>
             {isMobile ? (
               <>Keep your store searchable & current.</>
@@ -78,7 +78,7 @@ export default function MerchantLanding() {
               <>Keep your store<br />searchable,<br />current, and<br />reviewable.</>
             )}
           </h1>
-          <p style={{ fontSize: 14.5, color: 'rgba(200,213,181,0.6)', lineHeight: 1.8, maxWidth: isMobile ? '100%' : 400, fontWeight: 300, marginBottom: 44 }}>
+          <p style={{ fontSize: 14, color: 'rgba(200,213,181,0.6)', lineHeight: 1.7, maxWidth: isMobile ? '100%' : 400, fontWeight: 300, marginBottom: isMobile ? 32 : 44 }}>
             Fluid Orbit for merchants focuses on the basics that matter: store connection, catalog sync, and reliable buyer handoff.
           </p>
 
@@ -126,16 +126,16 @@ export default function MerchantLanding() {
       </div>
 
       <div style={{ flex: 1, background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: isMobile ? '32px 24px 20px' : '36px 40px 24px', borderBottom: '1px solid var(--m-border)' }}>
+        <div style={{ padding: isMobile ? '28px 24px 16px' : '36px 40px 24px', borderBottom: '1px solid var(--m-border)' }}>
           <div style={{ fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: 6 }}>
             What is included
           </div>
-          <h2 style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 22 : 24, fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+          <h2 style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 21 : 24, fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
             Practical tools for a connected catalog.
           </h2>
         </div>
 
-        <div style={{ padding: isMobile ? '16px 24px 24px' : '18px 40px 32px', display: 'grid', gap: 14 }}>
+        <div style={{ padding: isMobile ? '14px 24px 24px' : '18px 40px 32px', display: 'grid', gap: 12 }}>
           {pillars.map((item, index) => (
             <div key={item.title} style={{ display: 'flex', gap: 16, alignItems: 'flex-start', background: 'var(--bg-card)', border: '1px solid var(--m-border)', borderRadius: 16, padding: '18px 20px' }}>
               <div style={{ width: 30, height: 30, borderRadius: 9, background: 'var(--m-green-light)', border: '1px solid var(--m-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 600, color: 'var(--m-green)' }}>
