@@ -90,7 +90,11 @@ export async function performShopifySync(merchantId: string, userId: string) {
     const resShop: Response = await fetch(`https://${merchant.shop_domain}/admin/api/${API_VERSION}/shop.json`, {
       headers: { 'X-Shopify-Access-Token': accessToken },
     })
-    const shopData = await resShop.json()
+    if (!resShop.ok) {
+      const text = await resShop.text();
+      throw new Error(`Shopify API failed: ${resShop.status} ${text}`);
+    }
+    const shopData = await JSON.parse(await resShop.text().catch(() => '{}'))
 
     await convex.mutation(api.merchants.updateStoreProfile, {
       merchant_id: merchant._id,
