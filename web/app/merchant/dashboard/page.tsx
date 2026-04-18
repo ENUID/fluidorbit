@@ -1509,7 +1509,7 @@ function DashboardInner() {
 
       if (data.error === 'token_expired' || data.error === 'store_not_found') {
         setSyncStatus('token_expired')
-        setReconnectUrl(data.reconnect_url ?? '/merchant/onboarding')
+        setReconnectUrl(data.reconnect_url ?? '/onboarding')
         showToast(data.message || 'Please reconnect your Shopify store.', false)
         return
       }

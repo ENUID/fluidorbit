@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
+import { ConvexHttpClient } from 'convex/browser'
 import { authOptions } from '@/lib/auth'
+import { api } from '@/lib/convexApi'
 import { performShopifySync } from '@/lib/shopifySync'
+
+function getConvex() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL
+  if (!url) throw new Error('NEXT_PUBLIC_CONVEX_URL is not set')
+  return new ConvexHttpClient(url)
+}
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -15,6 +23,19 @@ export async function POST(req: NextRequest) {
   if (!merchantId) {
     return NextResponse.json({ error: 'Missing merchantId' }, { status: 400 })
   }
+
+  let reconnectUrl = '/onboarding'
+  try {
+    const convex = getConvex()
+    const merchant = await convex.query(api.merchants.getStoreForOwner, {
+      owner_user_id: session.user.id,
+      merchant_id: merchantId as any,
+    }) as { shop_domain?: string } | null
+
+    if (merchant?.shop_domain) {
+      reconnectUrl = `/api/shopify/install?shop=${encodeURIComponent(merchant.shop_domain)}`
+    }
+  } catch {}
 
   try {
     const result = await performShopifySync(merchantId, session.user.id)
@@ -40,7 +61,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         error: 'token_expired',
         message: `Shopify authentication failed: ${msg}. Try reconnecting your store.`,
-        reconnect_url: '/merchant/onboarding'
+        reconnect_url: reconnectUrl,
       }, { status: 401 })
     }
 
@@ -49,7 +70,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         error: 'store_not_found',
         message: 'No store found. Please connect your Shopify store first.',
-        reconnect_url: '/merchant/onboarding'
+        reconnect_url: reconnectUrl,
       }, { status: 404 })
     }
 

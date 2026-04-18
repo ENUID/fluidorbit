@@ -41,8 +41,10 @@ function StorePickerInner() {
       invalid_params: 'Invalid request from Shopify.',
       hmac_invalid: 'Security check failed. Please try again.',
       invalid_state: 'Session expired. Please reconnect.',
+      invalid_user_session: 'Google session was missing during Shopify connect. Please sign in again and retry.',
       shop_mismatch: 'Store mismatch. Please try again.',
       token_exchange_failed: 'Could not get an access token from Shopify.',
+      callback_failed: searchParams.get('message') || 'The Shopify callback failed while saving or syncing the store.',
       save_failed: 'The connected store could not be saved to this workspace.',
     }
 

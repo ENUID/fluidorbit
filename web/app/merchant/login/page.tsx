@@ -1,12 +1,14 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
 function AuthForm() {
   const [loading, setLoading] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -17,7 +19,9 @@ function AuthForm() {
 
   function handleGoogle() {
     setLoading(true)
-    signIn('google', { callbackUrl: '/merchant/stores' })
+    const next = searchParams.get('next')
+    const callbackUrl = next && next.startsWith('/') ? next : '/merchant/stores'
+    signIn('google', { callbackUrl })
   }
 
   const highlights = [

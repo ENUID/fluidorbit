@@ -7,12 +7,17 @@ const SCOPES = 'read_products,read_inventory,read_product_listings'
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions)
+  const shop = req.nextUrl.searchParams.get('shop')
+
   if (!session?.user?.id) {
-    console.warn('[Shopify Install] User ID missing from session, redirecting to login');
-    return NextResponse.redirect(new URL('/merchant/login', req.url))
+    console.warn('[Shopify Install] User ID missing from session, redirecting to login')
+    const loginUrl = new URL('/merchant/login', req.url)
+    if (shop) {
+      loginUrl.searchParams.set('next', `/api/shopify/install?shop=${encodeURIComponent(shop)}`)
+    }
+    return NextResponse.redirect(loginUrl)
   }
 
-  const shop = req.nextUrl.searchParams.get('shop')
   if (!shop) {
     return NextResponse.json({ error: 'Missing shop parameter' }, { status: 400 })
   }
