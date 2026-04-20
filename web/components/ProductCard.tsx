@@ -35,9 +35,9 @@ export default function ProductCard({
   onToggleSave,
   ctaLabel = 'View in store',
 }: Props) {
-  const tags = (product.tags || []).slice(0, 3).join(' · ')
+  const tags = (product.tags || []).slice(0, 3).join(' / ')
   const hasUrl = product.store_url && product.store_url !== '#'
-  const meta = [product.product_type, tags].filter(Boolean).join(' · ')
+  const meta = [product.product_type, tags].filter(Boolean).join(' / ')
 
   return (
     <div
