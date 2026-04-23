@@ -1,10 +1,11 @@
 # Fluid Orbit 🌌
 
-**Fluid Orbit** is an AI Shopping OS, **YOU** describes what you want, and AI Agents finds the best, trusted, quality products from independent Brand/Stores, no ads/sponsors, no marketplace manipulation. you can search, compare, buy, and receive products, with tryons, comparison, agentic checkout, tracking and delivery and more all handled in a single chat.
+**Fluid Orbit** is an AI Shopping OS, **YOU** describes what you want, and AI Agents finds the best, trusted, quality products from independent Brand/Stores, no ads/sponsors, no marketplace manipulation. You can search, compare, buy, and receive products, with tryons, comparison, agentic checkout, tracking and delivery and more all handled in a single chat.
 
 ## 🚀 Live Demo
 - **Fluid Orbit**: [https://fo.enuid.com](https://fo.enuid.com)
-- **Brand/Store Dashboard**: [https://store.enuid.com](https://store.enuid.com)
+- **Brand/Store Integration
+- **: [https://store.enuid.com](https://store.enuid.com)
 
 ## ✨ Features
 - **Intent-Based Search**: Buyers can search for products using natural language (e.g., "Handmade leather boots under $200").
