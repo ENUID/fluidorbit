@@ -83,7 +83,7 @@ export default function MerchantLanding() {
           </p>
 
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', width: isMobile ? '100%' : 'auto' }}>
-            <Link href="/merchant/login" style={{ 
+            <Link href="/merchant/stores" style={{ 
               background: '#fff', 
               color: 'var(--m-green)', 
               borderRadius: 30, 

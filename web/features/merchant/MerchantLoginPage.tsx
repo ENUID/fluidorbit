@@ -2,13 +2,16 @@
 
 import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 function AuthForm() {
   const [loading, setLoading] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const { status } = useSession()
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -16,6 +19,13 @@ function AuthForm() {
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
+
+  useEffect(() => {
+    if (status !== 'authenticated') return
+    const next = searchParams.get('next')
+    const callbackUrl = next && next.startsWith('/') ? next : '/merchant/stores'
+    router.replace(callbackUrl)
+  }, [router, searchParams, status])
 
   function handleGoogle() {
     setLoading(true)
