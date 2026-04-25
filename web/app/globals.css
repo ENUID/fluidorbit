@@ -1,19 +1,190 @@
+/* ============================================================
+   FLUID ORBIT — DESIGN SYSTEM
+   ============================================================ */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ---------- FONTS ---------- */
 :root {
-  /* Base palette */
-  --bg:           #eeebe4;
-  --bg-card:      #f7f5f1;
-  --bg-white:     #faf9f6;
-  --cream:        #f7f4ef;
-  --cream2:       #ede9e1;
-  --cream3:       #e2ddd4;
-  --chalk:        #f0ede6;
-  --ink:          #1a1a16;
-  --ink2:         #3c3830;
-  --ink3:         #7d7a72;
-  --ink4:         #b0aca3;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --mono:  'DM Mono', 'Courier New', monospace;
+  --body:  'Outfit', system-ui, sans-serif;
+}
 
+/* ---------- LIGHT THEME (default) ---------- */
+:root {
+  --bg:           #F7F5F0;
+  --bg-raised:    #FFFFFF;
+  --border:       rgba(30,26,22,0.10);
+  --border-hi:    rgba(30,26,22,0.20);
+  --ink:          #1E1A16;
+  --ink-2:        #4A4440;
+  --ink-3:        #8A8480;
+  --ink-4:        #B8B4B0;
+  --accent:       #3D5A47;
+  --accent-2:     #2E4436;
+  --accent-bg:    rgba(61,90,71,0.07);
+  --accent-ring:  rgba(61,90,71,0.18);
+  --bar-bg:       #FFFFFF;
+  --bar-border:   rgba(30,26,22,0.14);
+  --send-bg:      #1E1A16;
+  --send-fg:      #F7F5F0;
+  --send-hover:   #3D5A47;
+  --shadow:       0 2px 24px rgba(30,26,22,0.08);
+  --shadow-bar:   0 -1px 0 rgba(30,26,22,0.08), 0 -8px 32px rgba(30,26,22,0.06);
+  --shine:        rgba(255,255,255,0.9);
+
+  /* Connector line states */
+  --conn-idle:    rgba(30,26,22,0.20);
+  --conn-active:  #4A4440;
+  --conn-done:    rgba(138,132,128,0.40);
+
+  /* Grain */
+  --grain-opacity: 0.5;
+}
+
+/* ---------- DARK THEME ---------- */
+html.dark {
+  --bg:           #141210;
+  --bg-raised:    #1E1C18;
+  --border:       rgba(200,196,188,0.08);
+  --border-hi:    rgba(200,196,188,0.16);
+  --ink:          #E8E4DE;
+  --ink-2:        #B0ACA4;
+  --ink-3:        #7A766E;
+  --ink-4:        #4A4640;
+  --accent:       #8BAF96;
+  --accent-2:     #6E9A7C;
+  --accent-bg:    rgba(139,175,150,0.10);
+  --accent-ring:  rgba(139,175,150,0.22);
+  --bar-bg:       #1E1C18;
+  --bar-border:   rgba(200,196,188,0.12);
+  --send-bg:      #E8E4DE;
+  --send-fg:      #141210;
+  --send-hover:   #8BAF96;
+  --shadow:       0 2px 24px rgba(0,0,0,0.25);
+  --shadow-bar:   0 -1px 0 rgba(255,255,255,0.04), 0 -8px 32px rgba(0,0,0,0.30);
+  --shine:        rgba(139,175,150,0.95);
+
+  --conn-idle:    rgba(200,196,188,0.16);
+  --conn-active:  #8BAF96;
+  --conn-done:    rgba(139,175,150,0.25);
+
+  --grain-opacity: 0.35;
+}
+
+/* ---------- BASE ---------- */
+html { height: 100%; }
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--ink);
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s, color 0.3s;
+}
+
+input, button, textarea, select { font-family: inherit; }
+input::placeholder, textarea::placeholder { color: var(--ink-4); }
+input:focus, button:focus, textarea:focus { outline: none; }
+a { color: inherit; text-decoration: none; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+
+/* ---------- GRAIN TEXTURE OVERLAY ---------- */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: var(--grain-opacity);
+  transition: opacity 0.3s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* ---------- KEYFRAME ANIMATIONS ---------- */
+
+/* Accent pip blink */
+@keyframes pipBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+/* Fade up */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Spin */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Cursor blink */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Checkmark appear */
+@keyframes checkAppear {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 0.7; transform: scale(1); }
+}
+
+/* Shimmer sweep — light mode */
+@keyframes shimmerSweep {
+  from { background-position: -320px 0; }
+  to   { background-position: 320px 0; }
+}
+
+/* Chip entrance */
+@keyframes chipIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Count up pulse */
+@keyframes countPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Sub-item slide in */
+@keyframes subItemIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Task row entrance */
+@keyframes taskRowIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- UTILITY CLASSES ---------- */
+.fade-up { animation: fadeUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.fade-in { animation: fadeIn 0.18s ease both; }
+
+/* ============================================================
+   MERCHANT / LEGACY VARIABLES (preserved for merchant pages)
+   ============================================================ */
+:root {
   /* Merchant green */
   --m-green:       #2a3b2a;
   --m-green-mid:   #3d5c3a;
@@ -23,7 +194,7 @@
   --m-radius:      14px;
   --m-radius-sm:   8px;
 
-  /* Buyer brand */
+  /* Buyer brand (legacy) */
   --brand:         #b85c2a;
   --brand2:        #d4784a;
   --brand-bg:      rgba(184,92,42,0.07);
@@ -36,48 +207,18 @@
   --amber:         #a0620a;
   --amber-bg:      #fdf5e6;
 
-  /* Borders */
+  /* Legacy aliases */
+  --bg-card:       #f7f5f1;
+  --bg-white:      #faf9f6;
+  --cream:         #f7f4ef;
+  --cream2:        #ede9e1;
+  --cream3:        #e2ddd4;
+  --chalk:         #f0ede6;
+  --ink2:          #3c3830;
+  --ink3:          #7d7a72;
+  --ink4:          #b0aca3;
   --line:          rgba(26,24,20,0.09);
   --line2:         rgba(26,24,20,0.16);
-
-  /* Fonts */
-  --serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --sans:  'DM Sans', 'Geist', system-ui, -apple-system, sans-serif;
-  --mono:  'JetBrains Mono', 'Fira Mono', monospace;
-  --ease:  cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html { height: 100%; }
-body {
-  font-family: var(--sans);
-  background: var(--cream);
-  color: var(--ink);
-  height: 100%;
-  -webkit-font-smoothing: antialiased;
-}
-
-input, button, textarea, select { font-family: inherit; }
-input::placeholder { color: var(--ink3); }
-input:focus, button:focus, textarea:focus { outline: none; }
-a { color: inherit; }
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--cream3); border-radius: 4px; }
-
-@keyframes fadeUp  { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-@keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
-@keyframes spin    { to { transform:rotate(360deg); } }
-@keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-
-.fade-up { animation: fadeUp 0.24s var(--ease) both; }
-.fade-in { animation: fadeIn 0.18s ease both; }
-
-.spinner {
-  display: inline-block;
-  width: 12px; height: 12px;
-  border: 1.5px solid var(--cream3);
-  border-top-color: var(--ink3);
-  border-radius: 50%;
-  animation: spin 0.65s linear infinite;
+  --sans:          'DM Sans', 'Geist', system-ui, -apple-system, sans-serif;
+  --ease:          cubic-bezier(0.16, 1, 0.3, 1);
 }

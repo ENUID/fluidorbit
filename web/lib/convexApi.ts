@@ -3,6 +3,10 @@ type ConvexFunctionRef = any
 const fn = (path: string): ConvexFunctionRef => path
 
 export const api = {
+  users: {
+    createUser: fn('users:createUser'),
+    getUserByEmail: fn('users:getUserByEmail'),
+  },
   merchants: {
     listByUser: fn('merchants:listByUser'),
     listProducts: fn('merchants:listProducts'),
@@ -23,4 +27,4 @@ export const api = {
     markEmbeddingFailed: fn('embedHelpers:markEmbeddingFailed'),
     getEmbedStatus: fn('embedHelpers:getEmbedStatus'),
   },
-}
+}   

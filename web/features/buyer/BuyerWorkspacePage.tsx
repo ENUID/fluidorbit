@@ -1,6 +1,7 @@
 'use client'
 
 import { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { useSession, signOut } from 'next-auth/react'
 import ProductCard, { Product } from '@/components/ProductCard'
 
 interface Message {
@@ -37,6 +38,7 @@ function formatTime(timestamp: number) {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession()
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
   const [history, setHistory] = useState<ConversationTurn[]>([])
   const [input, setInput] = useState('')
@@ -678,7 +680,25 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            {status === 'authenticated' ? (
+              <button
+                onClick={() => signOut()}
+                style={{
+                  background: 'transparent', border: 'none', color: 'var(--ink3)',
+                  fontSize: 13, cursor: 'pointer', fontWeight: 500
+                }}
+              >
+                Sign Out
+              </button>
+            ) : (
+              <a href="/signin" style={{
+                background: 'transparent', border: 'none', color: 'var(--ink3)', textDecoration: 'none',
+                fontSize: 13, cursor: 'pointer', fontWeight: 500
+              }}>
+                Sign In
+              </a>
+            )}
             {hasConversation && (
               <button
                 type="button"
