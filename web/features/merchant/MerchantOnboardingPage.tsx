@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 function normalizeDomain(input: string) {
@@ -14,7 +14,15 @@ export default function Onboarding() {
   const [domain, setDomain] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 900)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   async function handleContinue() {
     setError('')
@@ -42,33 +50,68 @@ export default function Onboarding() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg)',
+        display: 'flex',
+        alignItems: isMobile ? 'stretch' : 'center',
+        justifyContent: 'center',
+        padding: isMobile ? '88px 0 0' : 24,
+        overflowX: 'hidden',
+      }}
+    >
       <button
         type="button"
         onClick={() => router.push('/merchant/dashboard')}
         style={{
           position: 'fixed',
-          top: 22,
-          left: 24,
+          top: isMobile ? 18 : 22,
+          left: isMobile ? 16 : 24,
           background: 'var(--bg-card)',
           border: '1px solid var(--m-border)',
           borderRadius: 20,
-          padding: '6px 14px',
-          fontSize: 12,
+          padding: isMobile ? '10px 16px' : '6px 14px',
+          fontSize: isMobile ? 14 : 12,
           color: 'var(--ink3)',
           cursor: 'pointer',
           fontFamily: 'var(--sans)',
+          zIndex: 20,
+          maxWidth: isMobile ? 'calc(100vw - 32px)' : 'none',
         }}
       >
         Back to dashboard
       </button>
 
-      <div style={{ display: 'flex', width: '100%', maxWidth: 840, borderRadius: 18, overflow: 'hidden', border: '1px solid var(--m-border)' }}>
-        <div style={{ width: 270, background: 'var(--m-green)', color: 'var(--bg-white)', padding: '38px 28px', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          width: '100%',
+          maxWidth: 840,
+          borderRadius: isMobile ? 0 : 18,
+          overflow: 'hidden',
+          border: isMobile ? 'none' : '1px solid var(--m-border)',
+          minWidth: 0,
+        }}
+      >
+        <div
+          style={{
+            width: isMobile ? '100%' : 270,
+            background: 'var(--m-green)',
+            color: 'var(--bg-white)',
+            padding: isMobile ? '28px 20px' : '38px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 0,
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 100% 70% at 0% 120%, rgba(200,213,181,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
 
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 20 : 32 }}>
               <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
                 <circle cx="14" cy="14" r="12" stroke="#c8d5b5" strokeWidth="1.5" />
                 <circle cx="14" cy="14" r="5" fill="#c8d5b5" />
@@ -77,12 +120,12 @@ export default function Onboarding() {
               <span style={{ fontFamily: 'var(--serif)', fontSize: 16, color: 'var(--bg-white)' }}>Fluid Orbit</span>
             </div>
 
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: 24, lineHeight: 1.15, marginBottom: 10, letterSpacing: '-0.02em', fontWeight: 300 }}>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 28 : 24, lineHeight: 1.15, marginBottom: 10, letterSpacing: '-0.02em', fontWeight: 300 }}>
               Connect a Shopify store
               <br />
               to this workspace.
             </h2>
-            <p style={{ fontSize: 12.5, color: 'rgba(200,213,181,0.5)', lineHeight: 1.8, marginBottom: 28, fontWeight: 300 }}>
+            <p style={{ fontSize: isMobile ? 13.5 : 12.5, color: 'rgba(200,213,181,0.5)', lineHeight: 1.8, marginBottom: isMobile ? 20 : 28, fontWeight: 300 }}>
               We only ask for the Shopify store domain first. Authorization, sync, and catalog review happen in the next steps.
             </p>
 
@@ -94,42 +137,62 @@ export default function Onboarding() {
               ].map(item => (
                 <div key={item} style={{ display: 'flex', gap: 10 }}>
                   <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#c8d5b5', marginTop: 6, flexShrink: 0 }} />
-                  <div style={{ fontSize: 12, color: 'rgba(200,213,181,0.68)', lineHeight: 1.65 }}>{item}</div>
+                  <div style={{ fontSize: isMobile ? 12.5 : 12, color: 'rgba(200,213,181,0.68)', lineHeight: 1.65 }}>{item}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ position: 'relative', zIndex: 1, marginTop: 'auto', fontSize: 11, color: 'rgba(200,213,181,0.26)' }}>
+          <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? 22 : 'auto', fontSize: 11, color: 'rgba(200,213,181,0.26)' }}>
             Shopify connection required
           </div>
         </div>
 
-        <div style={{ flex: 1, background: 'var(--bg)', padding: '36px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 36 }}>
+        <div
+          style={{
+            flex: 1,
+            background: 'var(--bg)',
+            padding: isMobile ? '24px 16px 28px' : '36px 32px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            minWidth: 0,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: isMobile ? 24 : 36,
+              width: '100%',
+              overflowX: isMobile ? 'auto' : 'visible',
+              paddingBottom: isMobile ? 4 : 0,
+              justifyContent: isMobile ? 'flex-start' : 'center',
+            }}
+          >
             {steps.map((step, index) => (
               <div key={step.n} style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 500, flexShrink: 0, background: step.active ? 'var(--m-green)' : 'var(--bg-card)', color: step.active ? 'var(--bg-white)' : 'var(--ink3)', border: step.active ? 'none' : '1px solid var(--m-border)' }}>
+                  <div style={{ width: isMobile ? 28 : 24, height: isMobile ? 28 : 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: isMobile ? 12 : 11, fontWeight: 500, flexShrink: 0, background: step.active ? 'var(--m-green)' : 'var(--bg-card)', color: step.active ? 'var(--bg-white)' : 'var(--ink3)', border: step.active ? 'none' : '1px solid var(--m-border)' }}>
                     {step.n}
                   </div>
-                  <span style={{ fontSize: 11.5, color: step.active ? 'var(--ink)' : 'var(--ink3)', fontWeight: step.active ? 500 : 400, whiteSpace: 'nowrap' }}>{step.label}</span>
+                  <span style={{ fontSize: isMobile ? 12.5 : 11.5, color: step.active ? 'var(--ink)' : 'var(--ink3)', fontWeight: step.active ? 500 : 400, whiteSpace: 'nowrap' }}>{step.label}</span>
                 </div>
-                {index < steps.length - 1 && <div style={{ width: 24, height: 1, background: 'var(--m-border)', margin: '0 8px', flexShrink: 0 }} />}
+                {index < steps.length - 1 && <div style={{ width: isMobile ? 18 : 24, height: 1, background: 'var(--m-border)', margin: isMobile ? '0 6px' : '0 8px', flexShrink: 0 }} />}
               </div>
             ))}
           </div>
 
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--m-border)', borderRadius: 14, padding: '28px 26px', width: '100%', maxWidth: 420 }}>
-            <h3 style={{ fontFamily: 'var(--serif)', fontSize: 20, fontWeight: 400, marginBottom: 6, letterSpacing: '-0.01em' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--m-border)', borderRadius: 14, padding: isMobile ? '22px 18px' : '28px 26px', width: '100%', maxWidth: 420 }}>
+            <h3 style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 24 : 20, fontWeight: 400, marginBottom: 6, letterSpacing: '-0.01em' }}>
               Store domain
             </h3>
-            <p style={{ fontSize: 12.5, color: 'var(--ink3)', marginBottom: 22, lineHeight: 1.7 }}>
+            <p style={{ fontSize: isMobile ? 13.5 : 12.5, color: 'var(--ink3)', marginBottom: 22, lineHeight: 1.7 }}>
               Enter the Shopify subdomain for the store you want to connect.
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', border: `1px solid ${error ? 'var(--red)' : 'var(--m-border)'}`, borderRadius: 10, padding: '11px 14px', marginBottom: error ? 8 : 16, gap: 4, transition: 'border-color 0.15s', background: 'var(--bg)' }}>
-              <span style={{ fontSize: 12, color: 'var(--ink3)', whiteSpace: 'nowrap' }}>https://</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: `1px solid ${error ? 'var(--red)' : 'var(--m-border)'}`, borderRadius: 10, padding: isMobile ? '10px 12px' : '11px 14px', marginBottom: error ? 8 : 16, gap: 4, transition: 'border-color 0.15s', background: 'var(--bg)', width: '100%', minWidth: 0 }}>
+              <span style={{ fontSize: isMobile ? 11.5 : 12, color: 'var(--ink3)', whiteSpace: 'nowrap', flexShrink: 0 }}>https://</span>
               <input
                 value={domain}
                 onChange={event => {
@@ -139,18 +202,24 @@ export default function Onboarding() {
                 onKeyDown={event => event.key === 'Enter' && handleContinue()}
                 placeholder="store subdomain"
                 autoFocus
-                style={{ flex: 1, border: 'none', fontSize: 13.5, color: 'var(--ink)', background: 'none' }}
+                style={{ flex: 1, minWidth: 0, border: 'none', fontSize: isMobile ? 16 : 13.5, color: 'var(--ink)', background: 'none' }}
               />
-              <span style={{ fontSize: 12, color: 'var(--ink3)', whiteSpace: 'nowrap' }}>.myshopify.com</span>
+              {!isMobile && <span style={{ fontSize: 12, color: 'var(--ink3)', whiteSpace: 'nowrap', flexShrink: 0 }}>.myshopify.com</span>}
             </div>
 
-            {error && <p style={{ fontSize: 12, color: 'var(--red)', marginBottom: 14 }}>{error}</p>}
+            {isMobile && (
+              <p style={{ fontSize: 11.5, color: 'var(--ink3)', marginBottom: error ? 8 : 16, lineHeight: 1.6 }}>
+                <span style={{ fontFamily: 'var(--mono)' }}>.myshopify.com</span> is added automatically.
+              </p>
+            )}
+
+            {error && <p style={{ fontSize: 12, color: 'var(--red)', marginBottom: 14, lineHeight: 1.6 }}>{error}</p>}
 
             <button
               type="button"
               onClick={handleContinue}
               disabled={loading}
-              style={{ width: '100%', padding: '12px', background: loading ? 'var(--ink3)' : 'var(--m-green)', color: 'var(--bg-white)', border: 'none', borderRadius: 10, fontSize: 13.5, fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'background 0.15s' }}
+              style={{ width: '100%', padding: isMobile ? '14px 12px' : '12px', background: loading ? 'var(--ink3)' : 'var(--m-green)', color: 'var(--bg-white)', border: 'none', borderRadius: 10, fontSize: isMobile ? 15 : 13.5, fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'background 0.15s' }}
             >
               {loading ? (
                 <>
@@ -162,12 +231,12 @@ export default function Onboarding() {
               )}
             </button>
 
-            <p style={{ fontSize: 11, color: 'var(--ink3)', textAlign: 'center', marginTop: 14, lineHeight: 1.65 }}>
+            <p style={{ fontSize: isMobile ? 11.5 : 11, color: 'var(--ink3)', textAlign: 'center', marginTop: 14, lineHeight: 1.65 }}>
               The next screen is Shopify authorization for this specific store.
             </p>
           </div>
 
-          <p style={{ marginTop: 16, fontSize: 11, color: 'var(--ink3)' }}>Step 1 of 4</p>
+          <p style={{ marginTop: 16, fontSize: isMobile ? 12 : 11, color: 'var(--ink3)' }}>Step 1 of 4</p>
         </div>
       </div>
 
