@@ -54,8 +54,12 @@ export function middleware(request: NextRequest) {
       return withBuyerContext(request, NextResponse.rewrite(new URL('/merchant', request.url)))
     }
     
-    // If accessing a path that doesn't start with /merchant but should, we could rewrite it.
-    // For now, most internal links are already prefixed with /merchant.
+    // If the path doesn't start with /merchant or /api, rewrite it to include /merchant
+    if (!url.pathname.startsWith('/merchant') && !url.pathname.startsWith('/api')) {
+      const newUrl = new URL(`/merchant${url.pathname}`, request.url)
+      return withBuyerContext(request, NextResponse.rewrite(newUrl))
+    }
+
     return withBuyerContext(request, NextResponse.next())
   }
 
