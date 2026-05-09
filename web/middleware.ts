@@ -49,19 +49,29 @@ export function middleware(request: NextRequest) {
 
   // 3. Merchant Subdomain Logic: store.enuid.com
   if (isMerchantSubdomain) {
+    // If accessing root, rewrite to /merchant (landing page)
     if (url.pathname === '/' || url.pathname === '') {
       return withBuyerContext(request, NextResponse.rewrite(new URL('/merchant', request.url)))
     }
+    
+    // If accessing a path that doesn't start with /merchant but should, we could rewrite it.
+    // For now, most internal links are already prefixed with /merchant.
     return withBuyerContext(request, NextResponse.next())
   }
 
   // 4. Buyer Subdomain Logic: fo.enuid.com
   if (isBuyerSubdomain) {
     // If buyer tries to access merchant-specific paths, redirect to merchant subdomain
-    const merchantPaths = ['/merchant', '/dashboard', '/onboarding']
+    const merchantPaths = ['/merchant', '/dashboard', '/onboarding', '/stores', '/products', '/login']
     if (merchantPaths.some(path => url.pathname.startsWith(path))) {
       const newUrl = new URL(request.url)
       newUrl.hostname = hostname.replace('fo.', 'store.')
+      
+      // Ensure the path starts with /merchant if it doesn't already
+      if (!newUrl.pathname.startsWith('/merchant')) {
+        newUrl.pathname = `/merchant${newUrl.pathname}`
+      }
+      
       return withBuyerContext(request, NextResponse.redirect(newUrl))
     }
     return withBuyerContext(request, NextResponse.next())
