@@ -74,7 +74,6 @@ export default function Home({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -724,6 +723,7 @@ export default function Home({
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--m-green)' }} />
               {buyerContext.country} · {buyerContext.currency}
             </div>
+            {hasConversation && (
               <button
                 type="button"
                 onClick={resetConversation}
