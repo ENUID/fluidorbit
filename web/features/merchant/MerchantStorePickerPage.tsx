@@ -146,7 +146,14 @@ function StorePickerInner() {
           <button type="button" onClick={() => router.push('/onboarding')} style={{ fontSize: 12, color: 'var(--m-green-mid)', cursor: 'pointer', background: 'none', border: 'none', fontFamily: 'var(--sans)', display: 'flex', alignItems: 'center', gap: 5 }}>
             Connect new
           </button>
-          <button type="button" onClick={() => signOut({ callbackUrl: '/merchant' })} style={{ fontSize: 11.5, color: 'var(--ink3)', cursor: 'pointer', background: 'none', border: 'none', fontFamily: 'var(--sans)' }}>
+          <button
+            type="button"
+            onClick={async () => {
+              await signOut({ redirect: false })
+              window.location.href = '/merchant'
+            }}
+            style={{ fontSize: 11.5, color: 'var(--ink3)', cursor: 'pointer', background: 'none', border: 'none', fontFamily: 'var(--sans)' }}
+          >
             Sign out
           </button>
         </div>
