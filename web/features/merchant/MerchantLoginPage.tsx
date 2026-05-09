@@ -141,9 +141,9 @@ function AuthForm() {
 
         {!isMobile && (
           <div style={{ position: 'relative', zIndex: 1, marginTop: 'auto' }}>
-            <Link href="/" style={{ fontSize: 11.5, color: 'rgba(200,213,181,0.32)', textDecoration: 'none' }}>
+            <a href="https://from.enuid.com" style={{ fontSize: 11.5, color: 'rgba(200,213,181,0.32)', textDecoration: 'none' }}>
               Back to buyer workspace
-            </Link>
+            </a>
           </div>
         )}
       </div>
