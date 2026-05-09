@@ -7,6 +7,8 @@ import {
   BUYER_CURRENCY_COOKIE,
   resolveBuyerContext,
 } from '@/lib/buyerContext'
+import { getExchangeRates, ExchangeRates } from '@/lib/exchangeRates'
+import { api } from '@/lib/convexApi'
 
 const CHAT_WINDOW_MS = 60_000
 const CHAT_MAX_REQUESTS = 20
@@ -128,7 +130,7 @@ async function parseIntent(message: string, history: ChatHistoryMessage[]) {
   }
 }
 
-async function formatResponse(products: SearchProduct[], query: string) {
+async function formatResponse(products: SearchProduct[], query: string, rates: ExchangeRates) {
   if (!products.length) {
     return "I couldn't find matching products right now. Try describing what you're looking for differently: material, use case, or style?"
   }
@@ -137,7 +139,7 @@ async function formatResponse(products: SearchProduct[], query: string) {
     const summary = products.slice(0, 3).map((product) => ({
       name: product.title,
       store: product.vendor,
-      price: formatMoney(product.price, product.currency, product.base_currency),
+      price: formatMoney(product.price, product.currency, product.base_currency, rates),
     }))
     return await aiChat(
       [{ role: 'user', content: `Shopper searched: "${query}"\nFound: ${JSON.stringify(summary)}\nWrite a helpful response.` }],
@@ -151,72 +153,43 @@ async function formatResponse(products: SearchProduct[], query: string) {
 
 export async function POST(req: NextRequest) {
   if (isRateLimited(req)) {
-    return NextResponse.json({ error: 'Too many requests. Please wait a moment and try again.' }, { status: 429 })
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
-  const buyerCurrency = getBuyerCurrency(req)
+  try {
+    const { message, history } = await req.json()
+    if (!message) throw new Error('No message provided')
 
-  const body = await req.json().catch(() => ({}))
-  const { message, history = [] } = body as {
-    message?: string
-    history?: ChatHistoryMessage[]
-  }
+    const cleanHistory = sanitizeHistory(history || [])
+    const intent = await parseIntent(message, cleanHistory)
+    const buyerCurrency = getBuyerCurrency(req)
+    const rates = await getExchangeRates()
 
-  const trimmedMessage = message?.trim().slice(0, MESSAGE_MAX_CHARS) ?? ''
-  if (!trimmedMessage) {
-    return NextResponse.json({ error: 'Missing message' }, { status: 400 })
-  }
+    const convex = getConvex()
+    let products: SearchProduct[] = []
 
-  const sanitizedHistory = sanitizeHistory(history)
-  const intent = await parseIntent(trimmedMessage, sanitizedHistory)
+    if (intent.type === 'search') {
+      const embedding = await aiEmbed(intent.keywords)
+      const results = await convex.query(api.products.searchByEmbedding, {
+        embedding,
+        limit: 8,
+      })
+      products = normalizeProductsForBuyer(results as any, buyerCurrency)
 
-  if (intent.type === 'clarify') {
+      if (intent.budgetMax !== null) {
+        products = products.filter((p) => p.price <= (intent.budgetMax ?? Infinity))
+      }
+    }
+
+    const text = await formatResponse(products, intent.keywords, rates)
+
     return NextResponse.json({
-      text: "Could you describe what you're looking for? Mention the product type, material, budget, or how you'd use it.",
-      products: [],
-      intent: 'clarify',
+      text,
+      products,
+      intent,
     })
+  } catch (error: any) {
+    console.error('Chat API Error:', error)
+    return NextResponse.json({ error: error.message || 'Internal error' }, { status: 500 })
   }
-
-  let vector: number[]
-  try {
-    vector = await aiEmbed(intent.keywords)
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : String(err)
-    console.error('Embed error:', errorMessage)
-
-    const convex = getConvex()
-    const products = await (convex as any).query('search:keywordSearch', {
-      query: intent.keywords,
-      budgetMax: intent.budgetMax,
-      limit: 4,
-    }).catch(() => [])
-    const normalizedProducts = normalizeProductsForBuyer(products, buyerCurrency)
-    const text = await formatResponse(normalizedProducts, trimmedMessage)
-    return NextResponse.json({ text, products: normalizedProducts, intent: intent.type, fallback: true, currency: buyerCurrency })
-  }
-
-  let products: SearchProduct[] = []
-  try {
-    const convex = getConvex()
-    products = await (convex as any).action('search:semanticSearch', {
-      vector,
-      budgetMax: intent.budgetMax,
-      limit: 4,
-    })
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : String(err)
-    console.error('Vector search error:', errorMessage)
-
-    const convex = getConvex()
-    products = await (convex as any).query('search:keywordSearch', {
-      query: intent.keywords,
-      budgetMax: intent.budgetMax,
-      limit: 4,
-    }).catch(() => [])
-  }
-
-  const normalizedProducts = normalizeProductsForBuyer(products, buyerCurrency)
-  const text = await formatResponse(normalizedProducts, trimmedMessage)
-  return NextResponse.json({ text, products: normalizedProducts, intent: intent.type, currency: buyerCurrency })
 }

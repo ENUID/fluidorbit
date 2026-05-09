@@ -1,6 +1,7 @@
 'use client'
 
 import { formatMoney } from '@/lib/currency'
+import { ExchangeRates } from '@/lib/exchangeRates'
 
 export interface Product {
   id: string
@@ -26,6 +27,7 @@ export interface Product {
 
 interface Props {
   product: Product
+  rates: ExchangeRates
   isBest?: boolean
   saved?: boolean
   onToggleSave?: (product: Product) => void
@@ -34,6 +36,7 @@ interface Props {
 
 export default function ProductCard({
   product,
+  rates,
   isBest,
   saved = false,
   onToggleSave,
@@ -108,7 +111,7 @@ export default function ProductCard({
         {product.title}
       </div>
       <div style={{ fontSize: 14, color: 'var(--ink)', fontFamily: 'var(--serif)', marginTop: 2 }}>
-        {formatMoney(Number(product.price), product.currency, product.base_currency)}
+        {formatMoney(Number(product.price), product.currency, product.base_currency, rates)}
       </div>
 
       {meta && <div style={{ fontSize: 11, color: 'var(--ink3)', marginTop: 1 }}>{meta}</div>}

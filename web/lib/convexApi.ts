@@ -27,4 +27,7 @@ export const api = {
     markEmbeddingFailed: fn('embedHelpers:markEmbeddingFailed'),
     getEmbedStatus: fn('embedHelpers:getEmbedStatus'),
   },
+  products: {
+    searchByEmbedding: fn('products:searchByEmbedding'),
+  },
 }

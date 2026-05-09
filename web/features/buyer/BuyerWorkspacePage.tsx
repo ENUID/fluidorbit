@@ -3,6 +3,7 @@
 import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import ProductCard, { Product } from '@/components/ProductCard'
 import type { BuyerContext } from '@/lib/buyerContext'
+import { ExchangeRates } from '@/lib/exchangeRates'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -51,8 +52,10 @@ function normalizeProductsForCurrency(products: Product[], currency: string) {
 
 export default function Home({
   initialBuyerContext,
+  initialRates,
 }: {
   initialBuyerContext: BuyerContext
+  initialRates: ExchangeRates
 }) {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
   const [history, setHistory] = useState<ConversationTurn[]>([])
@@ -64,6 +67,7 @@ export default function Home({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [buyerContext] = useState(initialBuyerContext)
+  const [rates] = useState(initialRates)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -322,6 +326,7 @@ export default function Home({
                     <ProductCard
                       key={product.id || `${index}-${offset}`}
                       product={product}
+                      rates={rates}
                       isBest={offset === 0}
                       saved={savedIds.has(product.id)}
                       onToggleSave={toggleSaved}
@@ -547,6 +552,7 @@ export default function Home({
               <ProductCard
                 key={product.id}
                 product={product}
+                rates={rates}
                 saved
                 onToggleSave={toggleSaved}
               />
@@ -599,10 +605,11 @@ export default function Home({
           </div>
           {isMobile && (
             <button
+              type="button"
               onClick={() => setIsSidebarOpen(false)}
-              style={{ background: 'transparent', border: 'none', color: '#c8d5b5', cursor: 'pointer', padding: 4 }}
+              style={{ background: 'none', border: 'none', color: 'var(--bg-white)', cursor: 'pointer', padding: 4 }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -610,147 +617,109 @@ export default function Home({
         </div>
 
         {[
-          {
-            id: 'discover' as View,
-            title: 'Discover',
-            icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l7-7 7 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" /><path d="M8 19v-7h4v7" /></svg>,
-          },
-          {
-            id: 'history' as View,
-            title: 'History',
-            icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="10" cy="10" r="8" /><path d="M10 6v4l3 2" /></svg>,
-          },
-          {
-            id: 'saved' as View,
-            title: 'Saved',
-            icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 3.5A1.5 1.5 0 0 1 6.5 2h7A1.5 1.5 0 0 1 15 3.5V18l-5-3-5 3V3.5z" /></svg>,
-          },
+          { id: 'discover', label: 'Discover', icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l7-7 7 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" /><path d="M8 19v-7h4v7" /></svg> },
+          { id: 'history', label: 'History', icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="10" cy="10" r="8" /><path d="M10 6v4l3 2" /></svg> },
+          { id: 'saved', label: 'Saved', icon: <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 3.5A1.5 1.5 0 0 1 6.5 2h7A1.5 1.5 0 0 1 15 3.5V18l-5-3-5 3V3.5z" /></svg> },
         ].map(item => {
-          const active = activeView === item.id
+          const isActive = activeView === item.id
           return (
             <button
               key={item.id}
               type="button"
-              title={item.title}
               onClick={() => {
-                setActiveView(item.id)
-                if (isMobile) setIsSidebarOpen(false)
+                setActiveView(item.id as View)
+                setIsSidebarOpen(false)
               }}
               style={{
-                width: isMobile ? 'auto' : 42,
-                height: 48,
-                margin: isMobile ? '0 16px' : '0',
-                borderRadius: 12,
-                border: 'none',
-                cursor: 'pointer',
+                width: isMobile ? 'auto' : 44,
+                height: 44,
+                borderRadius: 14,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: isMobile ? 'flex-start' : 'center',
-                gap: 16,
-                padding: isMobile ? '0 16px' : '0',
-                background: active ? 'rgba(200,213,181,0.2)' : 'transparent',
-                color: active ? '#fff' : 'rgba(200,213,181,0.5)',
-                transition: 'all 0.2s ease',
+                gap: 12,
+                padding: isMobile ? '0 24px' : '0',
+                cursor: 'pointer',
+                color: isActive ? 'var(--m-green)' : 'var(--bg-white)',
+                border: 'none',
+                background: isActive ? 'var(--bg-white)' : 'transparent',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                opacity: isActive ? 1 : 0.7,
+                margin: isMobile ? '0 12px' : '0',
               }}
+              onMouseEnter={e => !isActive && (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={e => !isActive && (e.currentTarget.style.opacity = '0.7')}
             >
-              <span style={{ width: 20, height: 20, display: 'flex' }}>{item.icon}</span>
-              {isMobile && <span style={{ fontSize: 15, fontWeight: 500 }}>{item.title}</span>}
+              <span style={{ width: 20, height: 20, display: 'flex', flexShrink: 0 }}>{item.icon}</span>
+              {isMobile && <span style={{ fontSize: 15, fontWeight: 500 }}>{item.label}</span>}
             </button>
           )
         })}
-      </aside>
 
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <header
-          style={{
-            height: 64,
-            borderBottom: '1px solid var(--m-border)',
-            display: 'flex',
-            alignItems: 'center',
-            padding: isMobile ? '0 16px' : '0 28px',
-            justifyContent: 'space-between',
-            background: isMobile ? 'rgba(255,255,255,0.8)' : 'var(--bg)',
-            backdropFilter: isMobile ? 'blur(10px)' : 'none',
-            flexShrink: 0,
-            position: 'sticky',
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            {isMobile && (
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                style={{
-                  background: 'var(--m-green-light)',
-                  border: '1px solid var(--m-border)',
-                  borderRadius: 10,
-                  color: 'var(--m-green)',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  display: 'flex',
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, letterSpacing: '0.04em', color: 'var(--ink)', fontWeight: 600 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '2px', background: 'var(--m-green)', display: 'inline-block' }} />
-              From
+        <div style={{ marginTop: 'auto', padding: isMobile ? '0 24px' : '0', display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'center', gap: 20 }}>
+          <div style={{ textAlign: isMobile ? 'left' : 'center' }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: 4 }}>Region</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--bg-white)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6edba8' }} />
+              {buyerContext.country}
             </div>
           </div>
+        </div>
+      </aside>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div
-              style={{
-                display: isMobile ? 'none' : 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '7px 12px',
-                borderRadius: 999,
-                border: '1px solid var(--m-border)',
-                background: 'var(--bg-card)',
-                fontSize: 11.5,
-                color: 'var(--ink3)',
-              }}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0 }}>
+        {isMobile && (
+          <header style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid var(--m-border)', background: 'var(--bg)', flexShrink: 0 }}>
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(true)}
+              style={{ background: 'none', border: 'none', color: 'var(--ink)', padding: 8, marginLeft: -8, cursor: 'pointer' }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--m-green)' }} />
-              {buyerContext.country} · {buyerContext.currency}
-            </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              </svg>
+            </button>
+            <div style={{ marginLeft: 8, fontFamily: 'var(--serif)', fontSize: 17, fontWeight: 500 }}>From</div>
             {hasConversation && (
               <button
                 type="button"
                 onClick={resetConversation}
-                style={{
-                  border: '1px solid var(--m-border)',
-                  background: 'var(--bg-card)',
-                  borderRadius: 30,
-                  padding: '8px 16px',
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: 'var(--ink)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
-                }}
+                style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--m-green)', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}
               >
-                {isMobile ? 'New' : 'New search'}
+                New search
               </button>
             )}
-          </div>
-        </header>
+          </header>
+        )}
+
+        {!isMobile && hasConversation && (
+          <header style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 64, display: 'flex', alignItems: 'center', padding: '0 32px', zIndex: 10, pointerEvents: 'none' }}>
+            <button
+              type="button"
+              onClick={resetConversation}
+              style={{
+                pointerEvents: 'auto',
+                marginLeft: 'auto',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--m-border)',
+                borderRadius: 30,
+                padding: '8px 20px',
+                fontSize: 12,
+                fontWeight: 500,
+                color: 'var(--ink2)',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              }}
+            >
+              New search
+            </button>
+          </header>
+        )}
 
         {activeView === 'discover' && renderDiscoverView()}
         {activeView === 'history' && renderHistoryView()}
         {activeView === 'saved' && renderSavedView()}
       </main>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
-      `}</style>
     </div>
   )
 }

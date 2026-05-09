@@ -12,35 +12,22 @@ const EURO_COUNTRIES = new Set([
   'LT', 'LU', 'LV', 'MT', 'NL', 'PT', 'SI', 'SK',
 ])
 
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  AE: 'AED',
-  AU: 'AUD',
-  CA: 'CAD',
-  CH: 'CHF',
-  CN: 'CNY',
-  GB: 'GBP',
-  HK: 'HKD',
-  IN: 'INR',
-  JP: 'JPY',
-  KR: 'KRW',
-  MX: 'MXN',
-  NO: 'NOK',
-  NZ: 'NZD',
-  SA: 'SAR',
-  SE: 'SEK',
-  SG: 'SGD',
-  US: 'USD',
-}
+import getCurrency from 'country-to-currency';
 
 function normalizeCode(value?: string | null) {
   return String(value ?? '').trim().toUpperCase()
 }
 
 export function currencyForCountry(country?: string | null) {
-  const normalizedCountry = normalizeCode(country)
-  if (!normalizedCountry) return 'USD'
-  if (EURO_COUNTRIES.has(normalizedCountry)) return 'EUR'
-  return COUNTRY_TO_CURRENCY[normalizedCountry] ?? 'USD'
+  const normalizedCountry = normalizeCode(country);
+  if (!normalizedCountry) return 'USD';
+  
+  try {
+    const currency = (getCurrency as Record<string, string>)[normalizedCountry];
+    return currency || 'USD';
+  } catch (error) {
+    return 'USD';
+  }
 }
 
 export function countryFromAcceptLanguage(headerValue?: string | null) {

@@ -5,6 +5,7 @@ import {
   BUYER_CURRENCY_COOKIE,
   resolveBuyerContext,
 } from '@/lib/buyerContext'
+import { getExchangeRates } from '@/lib/exchangeRates'
 
 export default async function Page() {
   const headerStore = await headers()
@@ -17,5 +18,12 @@ export default async function Page() {
     cookieCurrency: cookieStore.get(BUYER_CURRENCY_COOKIE)?.value,
   })
 
-  return <BuyerWorkspacePage initialBuyerContext={buyerContext} />
+  const rates = await getExchangeRates()
+
+  return (
+    <BuyerWorkspacePage 
+      initialBuyerContext={buyerContext} 
+      initialRates={rates}
+    />
+  )
 }

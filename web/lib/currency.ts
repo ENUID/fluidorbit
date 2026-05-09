@@ -1,23 +1,4 @@
-const USD_RATES: Record<string, number> = {
-  USD: 1,
-  AED: 3.6725,
-  AUD: 1.53,
-  CAD: 1.37,
-  CHF: 0.91,
-  CNY: 7.24,
-  EUR: 0.93,
-  GBP: 0.8,
-  HKD: 7.81,
-  INR: 83.4,
-  JPY: 151.2,
-  KRW: 1365,
-  MXN: 16.8,
-  NOK: 10.8,
-  NZD: 1.68,
-  SAR: 3.75,
-  SEK: 10.6,
-  SGD: 1.35,
-}
+import { ExchangeRates } from './exchangeRates';
 
 const CURRENCY_LOCALES: Record<string, string> = {
   USD: 'en-US',
@@ -38,21 +19,25 @@ const CURRENCY_LOCALES: Record<string, string> = {
   SAR: 'ar-SA',
   SEK: 'sv-SE',
   SGD: 'en-SG',
+  VND: 'vi-VN',
 }
 
 function normalizeCurrencyCode(code?: string | null) {
   return String(code ?? '').trim().toUpperCase()
 }
 
-export function isSupportedCurrency(code?: string | null) {
+export function isSupportedCurrency(code: string | null, rates?: ExchangeRates) {
   const normalized = normalizeCurrencyCode(code)
-  return Boolean(normalized && USD_RATES[normalized])
+  if (!normalized) return false
+  if (rates) return Boolean(rates[normalized])
+  return normalized.length === 3
 }
 
 export function convertCurrencyAmount(
   amount: number,
-  fromCurrency?: string | null,
-  toCurrency?: string | null,
+  fromCurrency: string | null | undefined,
+  toCurrency: string | null | undefined,
+  rates?: ExchangeRates,
 ) {
   const safeAmount = Number(amount)
   if (!Number.isFinite(safeAmount)) return 0
@@ -61,9 +46,11 @@ export function convertCurrencyAmount(
   const to = normalizeCurrencyCode(toCurrency) || from
 
   if (from === to) return safeAmount
+  if (!rates) return safeAmount
 
-  const fromRate = USD_RATES[from]
-  const toRate = USD_RATES[to]
+  const fromRate = rates[from]
+  const toRate = rates[to]
+  
   if (!fromRate || !toRate) return safeAmount
 
   return (safeAmount / fromRate) * toRate
@@ -71,21 +58,23 @@ export function convertCurrencyAmount(
 
 export function formatMoney(
   amount: number,
-  currency?: string | null,
-  baseCurrency?: string | null,
+  currency: string | null | undefined,
+  baseCurrency: string | null | undefined,
+  rates?: ExchangeRates,
 ) {
   const normalizedCurrency = normalizeCurrencyCode(currency) || 'USD'
   const normalizedBaseCurrency = normalizeCurrencyCode(baseCurrency) || normalizedCurrency
-  const convertedAmount = convertCurrencyAmount(amount, normalizedBaseCurrency, normalizedCurrency)
-  const locale = CURRENCY_LOCALES[normalizedCurrency] ?? 'en-US'
+  
+  const convertedAmount = convertCurrencyAmount(amount, normalizedBaseCurrency, normalizedCurrency, rates)
+  const locale = CURRENCY_LOCALES[normalizedCurrency] || 'en-US'
 
   try {
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: normalizedCurrency,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: normalizedCurrency === 'VND' ? 0 : 2,
     }).format(convertedAmount)
   } catch {
-    return `${normalizedCurrency} ${convertedAmount.toFixed(2)}`
+    return `${normalizedCurrency} ${convertedAmount.toFixed(normalizedCurrency === 'VND' ? 0 : 2)}`
   }
 }
