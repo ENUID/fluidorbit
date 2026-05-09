@@ -141,8 +141,8 @@ export const authOptions: NextAuthOptions = {
   cookies: {
     sessionToken: {
       name: process.env.NODE_ENV === 'production'
-        ? '__Secure-next-auth.session-token'
-        : 'next-auth.session-token',
+        ? '__Secure-from.session-token'
+        : 'from.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -153,8 +153,8 @@ export const authOptions: NextAuthOptions = {
     },
     callbackUrl: {
       name: process.env.NODE_ENV === 'production'
-        ? '__Secure-next-auth.callback-url'
-        : 'next-auth.callback-url',
+        ? '__Secure-from.callback-url'
+        : 'from.callback-url',
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -165,16 +165,14 @@ export const authOptions: NextAuthOptions = {
     },
     csrfToken: {
       name: process.env.NODE_ENV === 'production'
-        ? '__Host-next-auth.csrf-token'
-        : 'next-auth.csrf-token',
+        ? '__Secure-from.csrf-token'
+        : 'from.csrf-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        // Note: __Host- cookies cannot have a Domain attribute, 
-        // so we remove the prefix in production if we want to use a domain.
-        // But for security, let's keep it simple and just ensure names are consistent.
+        domain: cookieDomain,
       },
     },
   },
