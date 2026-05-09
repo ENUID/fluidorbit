@@ -3,12 +3,12 @@
 **From** is an AI Shopping OS, **YOU** describes what you want, and AI Agents finds the best, trusted, quality products from Brand/Stores. You can search, compare, buy, and receive products, with tryons, comparison, agentic checkout, tracking and delivery and more all handled in a single chat.
 
 ## 🚀 Live Demo
-- **From**: [https://fo.enuid.com](https://fo.enuid.com)
+- **From**: [https://fo.enuid.com](https://from.enuid.com)
 - **Brand/Store Integration**: [https://store.enuid.com](https://store.enuid.com)
 
 ## ✨ Features
 - **Intent-Based Search**: Buyers can search for products using natural language (e.g., "Handmade leather boots under $200").
-- **Subdomain Routing**: Dedicated spaces for Buyers (`fo.`) and Merchants (`store.`).
+- **Subdomain Routing**: Dedicated spaces for Buyers (`from.`) and Merchants (`store.`).
 - **Smart Catalog Sync**: Automated product synchronization from Shopify with vector embedding for semantic search.
 - **Premium UI**: Minimalist, human-centric design with smooth transitions and intent-focused layout.
 
