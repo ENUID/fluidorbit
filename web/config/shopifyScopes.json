@@ -3,7 +3,6 @@
     "read_products",
     "read_inventory",
     "read_locations",
-    "read_metafields",
     "read_product_listings",
     "read_orders",
     "read_all_orders",

@@ -15,6 +15,7 @@ export interface Product {
   tags: string[]
   in_stock: boolean
   merchant_id?: string
+  image_url?: string
   description?: string
   product_type?: string
   variants: Array<{

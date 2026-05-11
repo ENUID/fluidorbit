@@ -607,10 +607,18 @@ function ProductCatalogCard({ product, currency, baseCurrency }: { product: Prod
       rel="noreferrer"
       style={{ background: 'var(--bg-card)', border: '1px solid var(--m-border)', borderRadius: 'var(--m-radius)', overflow: 'hidden', cursor: hasStoreLink(product) ? 'pointer' : 'default', textDecoration: 'none', color: 'inherit', display: 'block' }}
     >
-      <div style={{ width: '100%', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tone === 'out' ? '#ece8e0' : tone === 'low' ? '#f0ede6' : '#e8ede6' }}>
-        <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="#2a3b2a" strokeWidth="1" opacity="0.35">
-          <path d="M4 7l5-3h10l5 3-4 4v12H8V11L4 7z" />
-        </svg>
+      <div style={{ width: '100%', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tone === 'out' ? '#ece8e0' : tone === 'low' ? '#f0ede6' : '#e8ede6', overflow: 'hidden' }}>
+        {product.image_url ? (
+          <img 
+            src={product.image_url} 
+            alt={product.title} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+          />
+        ) : (
+          <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="#2a3b2a" strokeWidth="1" opacity="0.35">
+            <path d="M4 7l5-3h10l5 3-4 4v12H8V11L4 7z" />
+          </svg>
+        )}
       </div>
       <div style={{ padding: isMobile ? '8px 10px 10px' : '12px 14px 14px' }}>
         <div style={{ fontSize: 8.5, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: 2 }}>{sublabel || 'Catalog item'}</div>

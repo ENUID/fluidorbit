@@ -39,6 +39,7 @@ export default defineSchema({
     product_type: v.optional(v.string()),
     tags: v.array(v.string()),
     status: v.string(),
+    image_url: v.optional(v.string()),
     // Giữ vector index 768 dims; OpenAI text-embedding-3-small sẽ được request với dimensions=768.
     embedding: v.optional(v.array(v.float64())),
     embedding_status: v.optional(v.union(

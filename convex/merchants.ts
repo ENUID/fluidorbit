@@ -280,6 +280,7 @@ export const upsertProduct = mutation({
     product_type: v.optional(v.string()),
     tags: v.array(v.string()),
     status: v.string(),
+    image_url: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const merchantId = args.merchant_id as Id<"merchants">
@@ -311,6 +312,7 @@ export const upsertProduct = mutation({
         product_type: args.product_type,
         tags: args.tags,
         status: args.status,
+        image_url: args.image_url,
         embedding: embeddingChanged ? undefined : existing.embedding,
         embedding_status: embeddingChanged
           ? "pending"
@@ -333,6 +335,7 @@ export const upsertProduct = mutation({
       product_type: args.product_type ?? "",
       tags: args.tags,
       status: args.status,
+      image_url: args.image_url,
       embedding_status: "pending",
       embedding_content_hash: nextContentHash,
     })
@@ -480,6 +483,7 @@ export const listProducts = query({
         handle: product.handle,
         product_type: product.product_type ?? "",
         tags: product.tags ?? [],
+        image_url: product.image_url,
         description: product.description ?? "",
         price: minPrice,
         currency: merchant?.currency ?? merchant?.base_currency ?? "USD",
