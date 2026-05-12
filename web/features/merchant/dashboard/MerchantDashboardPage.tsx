@@ -1098,10 +1098,6 @@ function SettingsPage({
       return
     }
 
-    if (currency.trim() && !isSupportedCurrency(currency.trim())) {
-      showToast('Unsupported display currency. Use a common ISO code like USD, INR, EUR, or GBP.', false)
-      return
-    }
 
     setSaving(true)
     try {
