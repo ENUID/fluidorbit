@@ -577,7 +577,7 @@ function ProductMiniList({
                   <div style={{ fontSize: 10.5, color: 'var(--ink3)', marginTop: 1 }}>{getProductType(product)} · {inventory} unit{inventory === 1 ? '' : 's'}</div>
                 </div>
                 <div style={{ textAlign: 'right', minWidth: isMobile ? 64 : 86 }}>
-                  <div style={{ fontSize: isMobile ? 12 : 13, fontWeight: 500 }}>{formatCurrency(Number(product.price || 0), currency, product.base_currency ?? baseCurrency)}</div>
+                  <div style={{ fontSize: isMobile ? 12 : 13, fontWeight: 500 }}>{formatCurrency(Number(product.price || 0), product.base_currency ?? baseCurrency)}</div>
                   {!isMobile && (
                     <div style={{ width: 60, height: 3, background: 'var(--m-border)', borderRadius: 2, marginLeft: 'auto', marginTop: 5, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${percent(inventory, maxInventory)}%`, background: 'var(--m-green-mid)', borderRadius: 2 }} />
